@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # TODO (M7 hardening): pin these actions to full commit SHAs; Dependabot will update them.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v4
         with:
           enable-cache: true
@@ -26,7 +26,7 @@ jobs:
   security:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Secret scan (gitleaks)
         run: |
           curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.24.3/gitleaks_8.24.3_linux_x64.tar.gz \
