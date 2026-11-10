@@ -27,8 +27,8 @@ class Settings(BaseSettings):
     # --- Model ids (override in .env if a provider renames a model) ---
     groq_model: str = "groq/openai/gpt-oss-20b"
     groq_model_large: str = "groq/openai/gpt-oss-120b"
-    gemini_model: str = "gemini/gemini-2.0-flash"
-    openrouter_model: str = "openrouter/meta-llama/llama-3.3-70b-instruct:free"
+    gemini_model: str = "gemini/gemini-3.8-flash"
+    openrouter_model: str = "openrouter/nvidia/nemotron-3.5-lightning:free"
 
     # --- Observability (Phase 9) ---
     langfuse_public_key: str | None = None

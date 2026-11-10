@@ -48,12 +48,12 @@ PROVIDERS = [
     ),
     Provider(
         "Gemini Flash",
-        os.getenv("GEMINI_MODEL", "gemini/gemini-2.0-flash"),
+        os.getenv("GEMINI_MODEL", "gemini/gemini-3.8-flash"),
         "GEMINI_API_KEY",
     ),
     Provider(
         "OpenRouter (free)",
-        os.getenv("OPENROUTER_MODEL", "openrouter/meta-llama/llama-3.3-70b-instruct:free"),
+        os.getenv("OPENROUTER_MODEL", "openrouter/nvidia/nemotron-3.5-lightning:free"),
         "OPENROUTER_API_KEY",
     ),
 ]
@@ -69,6 +69,8 @@ def check(p: Provider) -> tuple[str, str]:
             tools=[WEATHER_TOOL],
             tool_choice="auto",
             max_tokens=256,
+            timeout=30,
+            num_retries=0,  # fail fast; a transient 503 is a provider issue, not a key issue
         )
         msg = resp.choices[0].message
         calls = getattr(msg, "tool_calls", None)
