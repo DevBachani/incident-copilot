@@ -5,7 +5,7 @@
 > custom MCP tool server, ranks root-cause hypotheses with evidence, and proposes a fix that
 > runs only after a human approves.
 
-<!-- badges go here once CI is live -->
+[![CI](https://github.com/DevBachani/incident-copilot/actions/workflows/ci.yml/badge.svg)](https://github.com/DevBachani/incident-copilot/actions/workflows/ci.yml)
 
 **This is an engineering + evaluation demonstration, not a production incident tool.** The
 commercial category is mature (Resolve AI, Cleric, Datadog Bits AI SRE, PagerDuty SRE Agent).
