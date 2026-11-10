@@ -1,0 +1,60 @@
+# Local debug for the mini-shop (no Kubernetes). Run from this folder:
+#   docker compose up --build
+# Then open http://localhost:8000/  and metrics at http://localhost:8001/metrics
+name: mini-shop
+
+services:
+  catalog:
+    build:
+      context: ..
+      dockerfile: shop/Dockerfile
+    image: mini-shop:dev
+    environment: { SERVICE: catalog, ADMIN_TOKEN: dev-token }
+    ports: ["8001:8000"]
+
+  cart:
+    image: mini-shop:dev
+    pull_policy: never
+    environment: { SERVICE: cart, ADMIN_TOKEN: dev-token }
+    ports: ["8002:8000"]
+    depends_on: [catalog]
+
+  payment:
+    image: mini-shop:dev
+    pull_policy: never
+    environment: { SERVICE: payment, ADMIN_TOKEN: dev-token }
+    ports: ["8003:8000"]
+    depends_on: [catalog]
+
+  checkout:
+    image: mini-shop:dev
+    pull_policy: never
+    environment:
+      SERVICE: checkout
+      ADMIN_TOKEN: dev-token
+      CART_URL: http://cart:8000
+      PAYMENT_URL: http://payment:8000
+    ports: ["8004:8000"]
+    depends_on: [cart, payment]
+
+  frontend:
+    image: mini-shop:dev
+    pull_policy: never
+    environment:
+      SERVICE: frontend
+      ADMIN_TOKEN: dev-token
+      CATALOG_URL: http://catalog:8000
+      CART_URL: http://cart:8000
+      CHECKOUT_URL: http://checkout:8000
+    ports: ["8000:8000"]
+    depends_on: [catalog, cart, checkout]
+
+  loadgen:
+    image: mini-shop:dev
+    pull_policy: never
+    command: ["python", "-m", "shop.loadgen.main"]
+    environment:
+      SERVICE: loadgen
+      FRONTEND_URL: http://frontend:8000
+      LOADGEN_RPS: "5"
+    depends_on: [frontend]
