@@ -1,1 +1,2 @@
 {"ts": "2026-11-10T12:10:44.861086+00:00", "action": "inject", "scenario_id": "payment-errors-01", "root_cause_service": "payment", "root_cause_category": "application_error"}
+{"ts": "2026-11-10T12:13:08.389791+00:00", "action": "clear", "scenario_id": "payment-errors-01", "root_cause_service": "payment", "root_cause_category": "application_error"}

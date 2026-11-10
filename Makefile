@@ -3,7 +3,7 @@
 # Cluster targets are implemented in Milestone M1.
 
 .PHONY: install verify-llm fmt lint types test check \
-        cluster-up cluster-stop cluster-start cluster-down
+        cluster-up cluster-stop cluster-start cluster-down inject clear
 
 install:          ## Install deps into .venv from the lockfile
 	uv sync --locked
@@ -27,12 +27,29 @@ test:             ## Run tests
 
 check: lint types test  ## Everything CI runs
 
-# --- Cluster lifecycle (M1) ---
-cluster-up:
-	@echo "M1: creates k3d cluster + mini-shop + observability"
-cluster-stop:
-	@echo "M1: k3d cluster stop (frees RAM, replay mode)"
-cluster-start:
-	@echo "M1: k3d cluster start"
-cluster-down:
-	@echo "M1: k3d cluster delete"
+# --- Cluster lifecycle (M1) ---  (needs k3d + helm on PATH; Docker Desktop running)
+CLUSTER := incident
+
+cluster-up:       ## Create cluster + deploy mini-shop & observability
+	k3d cluster create --config infra/k3d-config.yaml || k3d cluster start $(CLUSTER)
+	docker build -f shop/Dockerfile -t mini-shop:dev .
+	k3d image import mini-shop:dev -c $(CLUSTER)
+	kubectl create namespace observability --dry-run=client -o yaml | kubectl apply -f -
+	kubectl apply -f infra/observability/
+	helm upgrade --install mini-shop shop/helm/mini-shop -n shop --create-namespace
+	@echo "Shop: http://localhost:8080  Prometheus: http://localhost:9090  Jaeger: http://localhost:16686"
+
+cluster-stop:     ## Stop cluster (frees RAM; replay mode)
+	k3d cluster stop $(CLUSTER)
+
+cluster-start:    ## Start the stopped cluster
+	k3d cluster start $(CLUSTER)
+
+cluster-down:     ## Delete the cluster
+	k3d cluster delete $(CLUSTER)
+
+inject:           ## Inject a fault scenario:  make inject S=payment-errors-01
+	uv run python faults/inject.py inject $(S)
+
+clear:            ## Clear a fault scenario:   make clear S=payment-errors-01
+	uv run python faults/inject.py clear $(S)

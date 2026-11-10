@@ -5,8 +5,8 @@ image:
 
 adminToken: dev-token
 
-# Set once the OTel Collector is deployed; empty = tracing is a no-op.
-otelEndpoint: ""
+# Shop services export OTLP traces straight to Jaeger. Empty = tracing no-op.
+otelEndpoint: "http://jaeger.observability:4318"
 
 loadgenRps: "5"
 
