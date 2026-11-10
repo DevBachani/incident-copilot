@@ -14,7 +14,7 @@ jobs:
     steps:
       # TODO (M7 hardening): pin these actions to full commit SHAs; Dependabot will update them.
       - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v4
+      - uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
       - run: uv sync --locked
@@ -32,6 +32,6 @@ jobs:
           curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.24.3/gitleaks_8.24.3_linux_x64.tar.gz \
             | tar -xz -C /tmp gitleaks
           /tmp/gitleaks detect --no-git --redact -v --source .   # scan files, no git-range issues
-      - uses: astral-sh/setup-uv@v4
+      - uses: astral-sh/setup-uv@v7
       - name: Dependency audit (pip-audit)
         run: uv run pip-audit || true   # report-only for now; enforced in M7 hardening
