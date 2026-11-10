@@ -22,3 +22,15 @@ jobs:
       - run: uv run ruff format --check .
       - run: uv run mypy
       - run: uv run pytest -q
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Secret scan (gitleaks)
+        uses: gitleaks/gitleaks-action@v2   # free for public repos
+      - uses: astral-sh/setup-uv@v4
+      - name: Dependency audit (pip-audit)
+        run: uv run pip-audit || true   # report-only for now; enforced in M7 hardening
