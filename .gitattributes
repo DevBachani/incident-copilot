@@ -1,0 +1,8 @@
+# Keep line endings sane across Windows + Linux (CI runs on Linux).
+* text=auto eol=lf
+*.py   text eol=lf
+*.sh   text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+Makefile text eol=lf
+*.ps1  text eol=crlf

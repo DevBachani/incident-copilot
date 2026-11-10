@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read   # least privilege by default
+
+jobs:
+  lint-type-test:
+    runs-on: ubuntu-latest
+    steps:
+      # TODO (M7 hardening): pin these actions to full commit SHAs; Dependabot will update them.
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy
+      - run: uv run pytest -q
