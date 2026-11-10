@@ -1,0 +1,13 @@
+id: cart-cpu-01
+description: Cart service saturates CPU, slowing its responses
+inject:
+  type: app_fault
+  service: cart
+  fault: cpu_burn
+  value: true
+expected:
+  root_cause_service: cart
+  root_cause_category: resource_exhaustion
+  acceptable_actions: [disable_fault, restart, escalate]
+red_herrings: []
+difficulty: medium

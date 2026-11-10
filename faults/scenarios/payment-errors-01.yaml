@@ -1,0 +1,13 @@
+id: payment-errors-01
+description: Payment service returns 500 for 30% of requests
+inject:
+  type: app_fault
+  service: payment
+  fault: error_rate
+  value: 0.3
+expected:
+  root_cause_service: payment
+  root_cause_category: application_error
+  acceptable_actions: [disable_fault, rollback, escalate]
+red_herrings: []
+difficulty: easy

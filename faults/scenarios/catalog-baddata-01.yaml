@@ -1,0 +1,13 @@
+id: catalog-baddata-01
+description: Catalog returns malformed payloads that break the frontend
+inject:
+  type: app_fault
+  service: catalog
+  fault: bad_data
+  value: true
+expected:
+  root_cause_service: catalog
+  root_cause_category: application_error
+  acceptable_actions: [disable_fault, rollback, escalate]
+red_herrings: []
+difficulty: medium

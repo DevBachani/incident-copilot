@@ -1,0 +1,13 @@
+id: checkout-latency-01
+description: Checkout service adds 1.5s latency to every request
+inject:
+  type: app_fault
+  service: checkout
+  fault: latency_ms
+  value: 1500
+expected:
+  root_cause_service: checkout
+  root_cause_category: application_error
+  acceptable_actions: [disable_fault, rollback, escalate]
+red_herrings: []
+difficulty: easy

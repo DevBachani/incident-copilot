@@ -1,0 +1,13 @@
+id: payment-latency-01
+description: Payment is slow (1.2s), surfacing as slow checkout
+inject:
+  type: app_fault
+  service: payment
+  fault: latency_ms
+  value: 1200
+expected:
+  root_cause_service: payment
+  root_cause_category: application_error
+  acceptable_actions: [disable_fault, rollback, escalate]
+red_herrings: []
+difficulty: medium
