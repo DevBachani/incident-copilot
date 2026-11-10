@@ -1,0 +1,32 @@
+# k3d cluster for Incident Copilot — tuned for an 8 GB laptop.
+# Create with:  k3d cluster create --config infra/k3d-config.yaml
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: incident
+servers: 1
+agents: 0
+
+options:
+  k3s:
+    extraArgs:
+      # Drop bundled components we don't need, to save RAM.
+      - arg: --disable=traefik
+        nodeFilters: [server:*]
+      - arg: --disable=metrics-server
+        nodeFilters: [server:*]
+  kubeconfig:
+    updateDefaultKubeconfig: true
+    switchCurrentContext: true
+
+# Fixed host<->NodePort mappings so URLs survive cluster restarts
+# (no flaky `kubectl port-forward`). Services below use these NodePorts.
+ports:
+  - port: "8080:30080"   # mini-shop frontend
+    nodeFilters: [loadbalancer]
+  - port: "3000:30030"   # Grafana
+    nodeFilters: [loadbalancer]
+  - port: "9090:30090"   # Prometheus
+    nodeFilters: [loadbalancer]
+  - port: "16686:30686"  # Jaeger UI
+    nodeFilters: [loadbalancer]

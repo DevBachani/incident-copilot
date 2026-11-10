@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loadgen
+  labels:
+    app: loadgen
+    app.kubernetes.io/part-of: mini-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: loadgen
+  template:
+    metadata:
+      labels:
+        app: loadgen
+        app.kubernetes.io/part-of: mini-shop
+    spec:
+      containers:
+        - name: loadgen
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["python", "-m", "shop.loadgen.main"]
+          env:
+            - name: FRONTEND_URL
+              value: "http://frontend:8000"
+            - name: LOADGEN_RPS
+              value: {{ .Values.loadgenRps | quote }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}

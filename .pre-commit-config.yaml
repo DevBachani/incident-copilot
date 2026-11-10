@@ -16,3 +16,4 @@ repos:
       - id: trailing-whitespace
       - id: check-added-large-files
       - id: check-yaml
+        exclude: ^(shop/helm|helm)/.*/templates/  # Helm templates aren't plain YAML

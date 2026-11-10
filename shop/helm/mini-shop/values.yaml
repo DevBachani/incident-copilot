@@ -1,0 +1,41 @@
+image:
+  repository: mini-shop
+  tag: dev
+  pullPolicy: IfNotPresent # image is imported into k3d, not pulled from a registry
+
+adminToken: dev-token
+
+# Set once the OTel Collector is deployed; empty = tracing is a no-op.
+otelEndpoint: ""
+
+loadgenRps: "5"
+
+# Tight limits for the 8 GB budget. The injector lowers a target's limit to
+# force OOMKilled in the "resource_exhaustion" scenario.
+resources:
+  requests:
+    memory: "64Mi"
+    cpu: "25m"
+  limits:
+    memory: "200Mi"
+    cpu: "300m"
+
+services:
+  catalog:
+    port: 8000
+  cart:
+    port: 8000
+  payment:
+    port: 8000
+  checkout:
+    port: 8000
+    env:
+      CART_URL: http://cart:8000
+      PAYMENT_URL: http://payment:8000
+  frontend:
+    port: 8000
+    nodePort: 30080
+    env:
+      CATALOG_URL: http://catalog:8000
+      CART_URL: http://cart:8000
+      CHECKOUT_URL: http://checkout:8000
