@@ -8,11 +8,17 @@ license = { text = "MIT" }
 dependencies = [
     "httpx>=0.28.1",
     # LiteLLM: exclude the March-2026 malicious releases. Exact pin lives in uv.lock (with hashes).
+    "kubernetes>=37.0.2",
+    "langchain-mcp-adapters>=0.3.2",
+    "langgraph>=1.2.22",
     "litellm>=1.70,!=1.82.7,!=1.82.8",
+    "mcp>=1.30.0",
+    "numpy>=2.5.4",
     "pydantic>=2.9",
     "pydantic-settings>=2.6",
     "python-dotenv>=1.0",
     "pyyaml>=6.0.3",
+    "scikit-learn>=1.9.1",
 ]
 
 [dependency-groups]
@@ -54,6 +60,11 @@ python_version = "3.12"
 strict = true
 ignore_missing_imports = true
 files = ["src"]
+
+[[tool.mypy.overrides]]
+# The kubernetes client is dynamically typed; its calls are untyped.
+module = "incident_copilot.mcp_server.backends.k8s"
+disallow_untyped_calls = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

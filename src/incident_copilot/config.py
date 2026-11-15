@@ -39,6 +39,12 @@ class Settings(BaseSettings):
     database_url: str = "postgresql://postgres:postgres@localhost:5432/incident_copilot"
     redis_url: str = "redis://localhost:6379/0"
 
+    # --- Observability backends (M2 tools) ---
+    prometheus_url: str = "http://localhost:9090"
+    jaeger_url: str = "http://localhost:16686"
+    shop_namespace: str = "shop"
+    tool_output_token_cap: int = 1500  # hard cap per tool output (free-tier budget)
+
 
 @lru_cache
 def get_settings() -> Settings:
