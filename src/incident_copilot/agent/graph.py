@@ -8,13 +8,13 @@ Flow:  triage (detect_anomalies first — stats before LLM)
 from __future__ import annotations
 
 import json
+from collections.abc import Callable
 from typing import Any, TypedDict
 
 from langgraph.graph import END, StateGraph
 from pydantic import ValidationError
 
 from ..llm.router import LLMRouter
-from ..mcp_server import tools as mcp_tools
 from .schemas import IncidentReport
 from .tools_registry import TOOL_SCHEMAS, run_tool
 
@@ -51,9 +51,9 @@ def _last(state: State) -> dict[str, Any]:
     return state["messages"][-1]
 
 
-def build_graph(router: LLMRouter):  # type: ignore[no-untyped-def]
+def build_graph(router: LLMRouter, tool_fn: Callable[..., dict[str, Any]] = run_tool):  # type: ignore[no-untyped-def]
     def triage(state: State) -> State:
-        anomalies = mcp_tools.detect_anomalies().model_dump()
+        anomalies = tool_fn("detect_anomalies", {})
         alert = state["alert"]
         user = (
             f"ALERT: {json.dumps(alert)}\n\n"
@@ -75,7 +75,7 @@ def build_graph(router: LLMRouter):  # type: ignore[no-untyped-def]
     def tools_node(state: State) -> State:
         for tc in _last(state).get("tool_calls") or []:
             fn = tc["function"]
-            result = run_tool(fn["name"], fn["arguments"])
+            result = tool_fn(fn["name"], fn["arguments"])
             state["messages"].append(
                 {
                     "role": "tool",

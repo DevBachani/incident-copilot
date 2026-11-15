@@ -3,7 +3,8 @@
 # Cluster targets are implemented in Milestone M1.
 
 .PHONY: install verify-llm fmt lint types test check \
-        cluster-up cluster-stop cluster-start cluster-down inject clear
+        cluster-up cluster-stop cluster-start cluster-down inject clear \
+        diagnose record eval
 
 install:          ## Install deps into .venv from the lockfile
 	uv sync --locked
@@ -53,3 +54,13 @@ inject:           ## Inject a fault scenario:  make inject S=payment-errors-01
 
 clear:            ## Clear a fault scenario:   make clear S=payment-errors-01
 	uv run python faults/inject.py clear $(S)
+
+# --- Agent + evals ---
+diagnose:         ## Run the agent live:  make diagnose SVC=payment
+	uv run python -m incident_copilot.agent.run --service $(SVC)
+
+record:           ## Record fixtures for a scenario:  make record S=payment-errors-01
+	uv run python -m incident_copilot.agent.run --scenario $(S) --mode record
+
+eval:             ## Replay eval suite:  make eval K=3
+	uv run python evals/run_eval.py --k $(if $(K),$(K),1)
