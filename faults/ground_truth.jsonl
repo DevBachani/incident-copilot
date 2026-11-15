@@ -2,3 +2,5 @@
 {"ts": "2026-11-10T12:13:08.389791+00:00", "action": "clear", "scenario_id": "payment-errors-01", "root_cause_service": "payment", "root_cause_category": "application_error"}
 {"ts": "2026-11-15T12:46:36.678810+00:00", "action": "inject", "scenario_id": "payment-errors-01", "root_cause_service": "payment", "root_cause_category": "application_error"}
 {"ts": "2026-11-15T12:54:11.689832+00:00", "action": "clear", "scenario_id": "payment-errors-01", "root_cause_service": "payment", "root_cause_category": "application_error"}
+{"ts": "2026-11-15T13:02:16.280822+00:00", "action": "inject", "scenario_id": "payment-errors-01", "root_cause_service": "payment", "root_cause_category": "application_error"}
+{"ts": "2026-11-15T13:05:29.278927+00:00", "action": "clear", "scenario_id": "payment-errors-01", "root_cause_service": "payment", "root_cause_category": "application_error"}
