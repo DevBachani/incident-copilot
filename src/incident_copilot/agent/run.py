@@ -88,6 +88,7 @@ def main() -> None:
         store = FixtureStore(args.scenario)
         if args.mode == "record":
             store.prime()
+            store.save()  # persist primed fixtures even if the agent run later fails
             tool_fn = store.record
         else:
             store.load()

@@ -27,7 +27,9 @@ class LLMRouter:
     def __init__(self) -> None:
         s = get_settings()
         self.small = [s.groq_model, s.gemini_model, s.openrouter_model]
-        self.large = [s.groq_model_large, s.gemini_model, s.openrouter_model]
+        # Last resort for the large tier is the small Groq model, so the agent
+        # degrades gracefully when 120b / Gemini / OpenRouter are all exhausted.
+        self.large = [s.groq_model_large, s.gemini_model, s.openrouter_model, s.groq_model]
         self.calls = 0
         self.tokens = 0
         self.last_model = ""
