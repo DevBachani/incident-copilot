@@ -67,7 +67,8 @@ def build_graph(router: LLMRouter, tool_fn: Callable[..., dict[str, Any]] = run_
         return state
 
     def agent(state: State) -> State:
-        resp = router.complete(state["messages"], tools=TOOL_SCHEMAS, tier="large")
+        # Investigation uses the small model (gpt-oss-20b); the report uses the large one.
+        resp = router.complete(state["messages"], tools=TOOL_SCHEMAS, tier="small")
         msg = resp.choices[0].message
         state["messages"].append(msg.model_dump())
         return state

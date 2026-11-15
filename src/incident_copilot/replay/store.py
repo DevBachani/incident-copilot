@@ -19,6 +19,14 @@ FIXTURES_DIR = Path("evals/fixtures")
 # version might make (not just the ones this run happened to make).
 _SERVICES = ["frontend", "catalog", "cart", "checkout", "payment"]
 
+# Common PromQL the agent tends to ask for — primed so replay covers them.
+_STANDARD_PROMQL = [
+    "sum by (service)(rate(shop_http_requests_total[5m]))",
+    'sum by (service)(rate(shop_http_requests_total{status=~"5.."}[5m]))',
+    "histogram_quantile(0.95, sum by (service, le)"
+    "(rate(shop_http_request_duration_seconds_bucket[5m])))",
+]
+
 
 def _normalize(name: str, arguments: str | dict[str, Any]) -> str:
     args = json.loads(arguments) if isinstance(arguments, str) else dict(arguments)
@@ -43,13 +51,15 @@ class FixtureStore:
         return result
 
     def prime(self) -> None:
-        """Record a standard set of calls for every service, broadening coverage."""
+        """Record a standard set of calls for every service, broadening replay coverage."""
         self.record("detect_anomalies", {})
         self.record("k8s_events", {})
         for svc in _SERVICES:
             self.record("service_health", {"service": svc})
             self.record("pod_logs", {"service": svc})
             self.record("pod_logs", {"service": svc, "previous": True})
+        for promql in _STANDARD_PROMQL:
+            self.record("query_metrics", {"promql": promql})
 
     def save(self) -> None:
         self.path.parent.mkdir(parents=True, exist_ok=True)
