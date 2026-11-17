@@ -1,6 +1,6 @@
 # Mini-shop service deps. Kept minimal for the 8 GB RAM budget.
 # Exact versions get locked (pip-compile) during M7 hardening.
-fastapi>=0.115
+fastapi>=0.162.7
 uvicorn[standard]>=0.32
 httpx>=0.27
 prometheus-client>=0.21
